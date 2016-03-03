@@ -3,10 +3,10 @@
 import urllib.request
 import json
 
-nodes_url = 'http://hannover.freifunk.net:8079/nodes.json'
-graph_url = 'http://hannover.freifunk.net:8079/graph.json'
-nodes_out = 'nodes.json'
-graph_out = 'graph.json'
+nodes_url = 'http://127.0.0.1:8079/nodes.json'
+graph_url = 'http://127.0.0.1:8079/graph.json'
+nodes_out = '/var/www/api/nodes.json'
+graph_out = '/var/www/api/graph.json'
 
 if __name__ == '__main__':
     nodes_content = None
@@ -32,7 +32,6 @@ if __name__ == '__main__':
     
     with open( nodes_out, 'w' ) as f:
         f.write( json.dumps( nodes_data )+'\n' )
-
 
     # Finally, load graph.json
     with urllib.request.urlopen( graph_url ) as f_in:
