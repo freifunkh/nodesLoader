@@ -21,11 +21,11 @@ if __name__ == '__main__':
             longitude = location['longitude']
             latitude = location['latitude']
 
-            # Let's assume Germany is a rect. ;-)
-            if ( latitude  < 47.070122
-              or latitude  > 55.565922
-              or longitude <  5.515137 
-              or longitude > 15.161133 ):
+            # Let's assume Europe is a rect. ;-)
+            if ( latitude  <  34.30
+              or latitude  >  71.85
+              or longitude < -24.96
+              or longitude >  39.72 ):
                 del node[1]['nodeinfo']['location']
         except KeyError:
             pass
