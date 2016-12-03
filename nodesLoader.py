@@ -52,11 +52,12 @@ if __name__ == '__main__':
         f.write(json.dumps(summary) + '\n')
 
     # history of the last 7 days (hourly)
-    if os.path.getmtime( history_out ) + history_threshold_time < datetime.datetime.now().timestamp():
+    now = datetime.datetime.now()
+    if os.path.getmtime( history_out ) + history_threshold_time < now.timestamp():
         history = []
         with open( history_out, 'r' ) as f:
             history = f.readlines()
-            history.append( dt.strftime('%Y-%m-%d %H:%M;') + str(summary['nodes_online']) + ';' + str(summary['clients_online']) + '\n' )
+            history.append( now.strftime('%Y-%m-%d %H:%M;') + str(summary['nodes_online']) + ';' + str(summary['clients_online']) + '\n' )
         with open( history_out, 'w' ) as f:
             f.writelines( history[(-1*history_lines):] )
 
