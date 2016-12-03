@@ -2,12 +2,15 @@
 
 import urllib.request
 import json
+import datetime
 
 nodes_url = 'http://127.0.0.1:8079/nodes.json'
 graph_url = 'http://127.0.0.1:8079/graph.json'
 nodes_out = '/var/www/api/nodes.json'
 graph_out = '/var/www/api/graph.json'
 summary_out = '/var/www/api/summary.json'
+history_out = '/var/www/api/history.csv'
+
 summary = dict(
     nodes_online=0,
     clients_online=0
@@ -38,12 +41,16 @@ if __name__ == '__main__':
                 del node[1]['nodeinfo']['location']
         except KeyError:
             pass
-    
+
     with open( nodes_out, 'w' ) as f:
         f.write( json.dumps( nodes_data )+'\n' )
 
     with open(summary_out, 'w') as f:
         f.write(json.dumps(summary) + '\n')
+
+    with open( history_out, 'a' ) as f:
+        dt = datetime.datetime.now()
+        f.write( dt.strftime('%Y-%m-%d %H:%M;') + str(summary['nodes_online']) + ';' + str(summary['clients_online']) )
 
     # Finally, load graph.json
     with urllib.request.urlopen( graph_url ) as f_in:
