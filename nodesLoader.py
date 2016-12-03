@@ -3,6 +3,7 @@
 import urllib.request
 import json
 import datetime
+import os.path
 
 nodes_url = 'http://127.0.0.1:8079/nodes.json'
 graph_url = 'http://127.0.0.1:8079/graph.json'
@@ -10,6 +11,7 @@ nodes_out = '/var/www/api/nodes.json'
 graph_out = '/var/www/api/graph.json'
 summary_out = '/var/www/api/summary.json'
 history_out = '/var/www/api/history.csv'
+history_threshold_time = 3600
 
 summary = dict(
     nodes_online=0,
@@ -48,9 +50,14 @@ if __name__ == '__main__':
     with open(summary_out, 'w') as f:
         f.write(json.dumps(summary) + '\n')
 
-    with open( history_out, 'a' ) as f:
-        dt = datetime.datetime.now()
-        f.write( dt.strftime('%Y-%m-%d %H:%M;') + str(summary['nodes_online']) + ';' + str(summary['clients_online']) )
+    # history of the last 7 days (hourly)
+    if os.path.getmtime( history_out ) + history_threshold_time < datetime.datetime.now().timestamp():
+        history = []
+        with open( history_out, 'r' ) as f:
+            history = f.readlines()
+            history.append( dt.strftime('%Y-%m-%d %H:%M;') + str(summary['nodes_online']) + ';' + str(summary['clients_online']) + '\n' )
+        with open( history_out, 'w' ) as f:
+            f.writelines( history[-168:] )
 
     # Finally, load graph.json
     with urllib.request.urlopen( graph_url ) as f_in:
