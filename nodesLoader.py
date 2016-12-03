@@ -7,6 +7,11 @@ nodes_url = 'http://127.0.0.1:8079/nodes.json'
 graph_url = 'http://127.0.0.1:8079/graph.json'
 nodes_out = '/var/www/api/nodes.json'
 graph_out = '/var/www/api/graph.json'
+summary_out = '/var/www/api/summary.json'
+summary = dict(
+    nodes_online=0,
+    clients_online=0
+)
 
 if __name__ == '__main__':
     nodes_content = None
@@ -21,6 +26,10 @@ if __name__ == '__main__':
             longitude = location['longitude']
             latitude = location['latitude']
 
+            if node[1]['flags']['online']:
+                summary['nodes_online'] += 1
+                summary['clients_online'] += node[1]['statistics']['clients']
+
             # Let's assume Europe is a rect. ;-)
             if ( latitude  <  34.30
               or latitude  >  71.85
@@ -32,6 +41,9 @@ if __name__ == '__main__':
     
     with open( nodes_out, 'w' ) as f:
         f.write( json.dumps( nodes_data )+'\n' )
+
+    with open(summary_out, 'w') as f:
+        f.write(json.dumps(summary) + '\n')
 
     # Finally, load graph.json
     with urllib.request.urlopen( graph_url ) as f_in:
