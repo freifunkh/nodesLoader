@@ -12,6 +12,7 @@ graph_out = '/var/www/api/graph.json'
 summary_out = '/var/www/api/summary.json'
 history_out = '/var/www/api/history.csv'
 history_threshold_time = 3600
+history_lines = 168
 
 summary = dict(
     nodes_online=0,
@@ -57,7 +58,7 @@ if __name__ == '__main__':
             history = f.readlines()
             history.append( dt.strftime('%Y-%m-%d %H:%M;') + str(summary['nodes_online']) + ';' + str(summary['clients_online']) + '\n' )
         with open( history_out, 'w' ) as f:
-            f.writelines( history[-168:] )
+            f.writelines( history[(-1*history_lines):] )
 
     # Finally, load graph.json
     with urllib.request.urlopen( graph_url ) as f_in:
