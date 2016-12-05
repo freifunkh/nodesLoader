@@ -28,13 +28,16 @@ if __name__ == '__main__':
 
     for node in nodes_data['nodes'].items():
         try:
-            location = node[1]['nodeinfo']['location']
-            longitude = location['longitude']
-            latitude = location['latitude']
-
             if node[1]['flags']['online']:
                 summary['nodes_online'] += 1
                 summary['clients_online'] += node[1]['statistics']['clients']
+        except KeyError:
+            pass
+
+        try: # Two try blocks so an empty location doesn't stop the script from counting the node
+            location = node[1]['nodeinfo']['location']
+            longitude = location['longitude']
+            latitude = location['latitude']
 
             # Let's assume Europe is a rect. ;-)
             if ( latitude  <  34.30
